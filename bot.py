@@ -1,3 +1,20 @@
+import os
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot de Domino Activo")
+
+def run_health_check_server():
+    port = int(os.environ.get("PORT", 8080))
+    server = HTTPServer(('0.0.0.0', port), HealthCheckHandler)
+    server.serve_forever()
+
+threading.Thread(target=run_health_check_server, daemon=True).start()
+
 """
 bot.py — Arranque del bot (registro de comandos y handlers)
 ==============================================================
